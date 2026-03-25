@@ -34,9 +34,20 @@ git clone https://github.com/wzl-xenon/openclaw-wsl-win-sync
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh [wsl-workspace-path] [windows-workspace-path]
 ```
 
-默认路径：
-- WSL 工作区：`~/.openclaw/workspace`
-- Windows 工作区（WSL 挂载）：`/mnt/c/[your-windows-path]/.openclaw/workspace`（根据你的实际情况修改，例如 `/mnt/c/home/xenon/.openclaw/workspace`）
+**配置默认路径：**  
+打开 `scripts/bidirectional-sync.sh`，修改开头的 `DEFAULT_WSL_WS` 和 `DEFAULT_WIN_WS` 为你自己的实际路径：
+```bash
+# --------------------------
+# DEFAULT PATHS - EDIT ME!
+# --------------------------
+DEFAULT_WSL_WS="$HOME/.openclaw/workspace"
+DEFAULT_WIN_WS="/mnt/c/your-windows-path/.openclaw/workspace"
+```
+
+修改之后，直接运行脚本不需要传参数了：
+```bash
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh
+```
 
 3. 配置自动同步，在你 WSL 和 Windows 两端的 `HEARTBEAT.md` 加入：
 ```markdown
@@ -100,9 +111,20 @@ git clone https://github.com/wzl-xenon/openclaw-wsl-win-sync
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh [wsl-workspace-path] [windows-workspace-path]
 ```
 
-Default paths:
-- WSL workspace: `~/.openclaw/workspace`
-- Windows workspace (from WSL): `/mnt/c/[your-windows-path]/.openclaw/workspace` (change to your actual path, example: `/mnt/c/home/xenon/.openclaw/workspace`)
+**Configure default paths:**  
+Open `scripts/bidirectional-sync.sh` and edit `DEFAULT_WSL_WS` and `DEFAULT_WIN_WS` at the top to match your actual paths:
+```bash
+# --------------------------
+# DEFAULT PATHS - EDIT ME!
+# --------------------------
+DEFAULT_WSL_WS="$HOME/.openclaw/workspace"
+DEFAULT_WIN_WS="/mnt/c/your-windows-path/.openclaw/workspace"
+```
+
+After editing, you can just run the script without arguments:
+```bash
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh
+```
 
 3. Enable auto-sync by adding this to `HEARTBEAT.md` on **both** WSL and Windows:
 ```markdown
