@@ -54,9 +54,13 @@ git clone https://github.com/wzl-xenon/openclaw-wsl-win-sync
 
 ### 📂 同步内容
 
-- ✅ 同步：`AGENTS.md`, `SOUL.md`, `USER.md`, `MEMORY.md`, `memory/`, `skills/` 所有工作区内容
+- ✅ 同步：`AGENTS.md`, `USER.md`, `MEMORY.md`, `memory/`, `skills/` 所有工作区共享内容
 - ❌ 排除：`*.log`, `node_modules/`, `.DS_Store`, `Thumbs.db`, `.git`
-- ❌ 不同步 `IDENTITY.md`：**保留两端各自独立身份，符合使用习惯**
+- ❌ 不同步：
+  - `IDENTITY.md`：保留两端各自独立身份
+  - `SOUL.md`：保留两端各自独立的核心个性配置
+
+这样设计：两边共享工作内容、技能、记忆，但各自保留独立的身份和个性，更灵活。
 
 ### Requirements
 
@@ -116,9 +120,13 @@ See details here：[references/CROSS_TALK.md](references/CROSS_TALK.md)
 
 ### 📂 What Gets Synced
 
-- ✅ Synced: `AGENTS.md`, `SOUL.md`, `USER.md`, `MEMORY.md`, `memory/`, `skills/` — everything in your workspace
+- ✅ Synced: `AGENTS.md`, `USER.md`, `MEMORY.md`, `memory/`, `skills/` — all shared workspace content
 - ❌ Excluded: `*.log`, `node_modules/`, `.DS_Store`, `Thumbs.db`, `.git`
-- ❌ Not synced: `IDENTITY.md` — keep separate identities for each environment, it just works better that way
+- ❌ Not synced:
+  - `IDENTITY.md` — keep separate identities for each environment
+  - `SOUL.md` — keep independent personality/core config on each side
+
+This design lets both sides share work content, skills, and memory, while keeping independent identity and personality configurations — more flexible for different use cases.
 
 ### Requirements
 
