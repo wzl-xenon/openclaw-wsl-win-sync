@@ -21,14 +21,13 @@ Automatic bidirectional synchronization between WSL OpenClaw and Windows OpenCla
 
 ## What gets synced
 
-- ✅ `workspace/` - All shared files including AGENTS.md, USER.md, MEMORY.md, memory/
+- ✅ `workspace/` - All files including AGENTS.md, SOUL.md, USER.md, MEMORY.md, memory/
 - ✅ `workspace/skills/` - All workspace skills
 - ❌ Excludes: 
   - `*.log`, `node_modules/`, `.DS_Store`, `Thumbs.db`, `.git`
   - `IDENTITY.md` - **保留各自独立身份**，两边可以有不同的名称/标识
-  - `SOUL.md` - 保留各自独立的核心个性配置
 
-这样设计：两边共享工作内容、技能、记忆，但各自保留独立的Agent身份和个性配置，符合使用习惯。
+这样设计：两边共享工作内容、技能、记忆，只保留独立的Agent身份，符合使用习惯。
 
 ## Automatic Sync with Heartbeat
 
