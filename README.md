@@ -36,7 +36,7 @@ git clone https://github.com/wzl-xenon/openclaw-wsl-win-sync
 
 默认路径：
 - WSL 工作区：`~/.openclaw/workspace`
-- Windows 工作区（WSL 挂载）：`/mnt/c/home/xenon/.openclaw/workspace`（根据你的实际情况修改）
+- Windows 工作区（WSL 挂载）：`/mnt/c/[your-windows-path]/.openclaw/workspace`（根据你的实际情况修改，例如 `/mnt/c/home/xenon/.openclaw/workspace`）
 
 3. 配置自动同步，在你 WSL 和 Windows 两端的 `HEARTBEAT.md` 加入：
 ```markdown
@@ -98,7 +98,7 @@ git clone https://github.com/wzl-xenon/openclaw-wsl-win-sync
 
 Default paths:
 - WSL workspace: `~/.openclaw/workspace`
-- Windows workspace (from WSL): `/mnt/c/home/xenon/.openclaw/workspace` (change to your actual path)
+- Windows workspace (from WSL): `/mnt/c/[your-windows-path]/.openclaw/workspace` (change to your actual path, example: `/mnt/c/home/xenon/.openclaw/workspace`)
 
 3. Enable auto-sync by adding this to `HEARTBEAT.md` on **both** WSL and Windows:
 ```markdown

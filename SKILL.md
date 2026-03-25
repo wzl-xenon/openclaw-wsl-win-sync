@@ -17,7 +17,7 @@ Automatic bidirectional synchronization between WSL OpenClaw and Windows OpenCla
 
 - Default WSL path: `~/.openclaw/workspace`
 - Default Windows path (WSL mount): `/mnt/c/Users/$USER/.openclaw/workspace`
-- Override by passing arguments if your paths differ
+- Override by passing arguments if your paths differ (your actual path might be `/mnt/c/home/xenon/.openclaw/workspace` for non-standard installs)
 
 ## What gets synced
 
