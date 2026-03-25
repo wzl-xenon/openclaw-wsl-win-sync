@@ -16,6 +16,7 @@ EXCLUDES=(
   ".DS_Store"
   "Thumbs.db"
   "IDENTITY.md"
+  "SOUL.md"
 )
 
 build_exclude_args() {
