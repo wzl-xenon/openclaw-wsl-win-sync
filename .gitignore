@@ -1,0 +1,13 @@
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Node modules
+node_modules/
+
+# Local config
+cross-config.json
