@@ -1,9 +1,14 @@
 #!/bin/bash
 # Bidirectional sync between WSL and Windows OpenClaw workspace
-# Usage: bidirectional-sync.sh <wsl-workspace-path> <windows-workspace-path>
+# Usage: bidirectional-sync.sh <wsl-workspace-path> <windows-workspace-path> [master]
 # 
 # If you don't pass arguments, it uses defaults below.
 # Edit the DEFAULTS below to match your paths.
+#
+# Master mode options:
+#   empty / default → bidirectional sync (default)
+#   wsl → WSL is master, only sync WSL → Windows
+#   windows → Windows is master, only sync Windows → WSL
 
 set -euo pipefail
 
@@ -12,12 +17,14 @@ set -euo pipefail
 # --------------------------
 # Change these to match your actual installation
 DEFAULT_WSL_WS="$HOME/.openclaw/workspace"
-# Your Windows workspace path from WSL: example /mnt/c/home/xenon/.openclaw/workspace
+# Your Windows workspace path from WSL: example /mnt/c/your-username/.openclaw/workspace
 DEFAULT_WIN_WS="/mnt/c/Users/$USER/.openclaw/workspace"
+DEFAULT_MASTER="bidirectional"
 
 # Use arguments if provided, otherwise defaults
 WSL_WS="${1:-$DEFAULT_WSL_WS}"
 WIN_WS="${2:-$DEFAULT_WIN_WS}"
+MASTER_MODE="${3:-$DEFAULT_MASTER}"
 
 # Exclude patterns
 EXCLUDES=(
@@ -54,14 +61,37 @@ fi
 
 EXCLUDE_ARGS=$(build_exclude_args)
 
-# WSL → Windows
-echo "1. Sync WSL → Windows..."
-rsync -av --update $EXCLUDE_ARGS "$WSL_WS/" "$WIN_WS/"
-
-# Windows → WSL
-echo ""
-echo "2. Sync Windows → WSL..."
-rsync -av --update $EXCLUDE_ARGS "$WIN_WS/" "$WSL_WS/"
+# Sync based on master mode
+case "$MASTER_MODE" in
+  "wsl")
+    echo "🔒 Master mode: WSL is master → only WSL → Windows sync"
+    echo ""
+    echo "1. Sync WSL → Windows..."
+    rsync -av --update $EXCLUDE_ARGS "$WSL_WS/" "$WIN_WS/"
+    ;;
+  "windows")
+    echo "🔒 Master mode: Windows is master → only Windows → WSL sync"
+    echo ""
+    echo "1. Sync Windows → WSL..."
+    rsync -av --update $EXCLUDE_ARGS "$WIN_WS/" "$WSL_WS/"
+    ;;
+  "bidirectional"|"")
+    echo "🔄 Bidirectional mode: two-way sync"
+    echo ""
+    # WSL → Windows
+    echo "1. Sync WSL → Windows..."
+    rsync -av --update $EXCLUDE_ARGS "$WSL_WS/" "$WIN_WS/"
+    # Windows → WSL
+    echo ""
+    echo "2. Sync Windows → WSL..."
+    rsync -av --update $EXCLUDE_ARGS "$WIN_WS/" "$WSL_WS/"
+    ;;
+  *)
+    echo "⚠️  Unknown master mode: $MASTER_MODE"
+    echo "   Valid modes: wsl, windows, bidirectional (default)"
+    exit 1
+    ;;
+esac
 
 echo ""
 echo "✅ Sync completed at $(date '+%Y-%m-%d %H:%M:%S')"

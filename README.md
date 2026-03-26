@@ -10,15 +10,15 @@
 
 ### 🤔 为什么需要这个？
 
-如果你和我一样，既想在 WSL 里获得更好的网络开发体验，又需要在 Windows 原生体验桌面应用（飞书/微信等，同时让 OpenClaw 能正常调用Windows原生能力，那就可以两端都跑 OpenClaw，这个工具帮你自动同步工作区、技能、记忆，让你在两边都能无缝工作。
+如果你和我一样，既想在 WSL 里获得更好的网络开发体验，又需要在 Windows 原生体验桌面应用（飞书/微信等），同时让 OpenClaw 能正常调用 Windows 原生能力，那就可以两端都跑 OpenClaw，这个工具帮你自动同步工作区、技能、记忆，让你在两边都能无缝工作。
 
 ### ✨ 特性
 
-- ✅ 双向实时增量同步，两边修改都会同步
+- ✅ **支持多种同步模式**：双向同步 / 指定一端为主，只同步从端 → 灵活适配你的工作流
 - ✅ 基于 `rsync` 只同步变更文件，速度极快
 - ✅ 支持和 OpenClaw Heartbeat 集成，每 30 分钟自动同步
 - ✅ 支持**跨实例对话**：WSL 和 Windows 两个 OpenClaw 实例可以通过共享文件自动对话，实现双实例协作
-- ✅ 智能排除：自动排除日志、缓存文件，保留各自独立的 `IDENTITY.md`（两端可以各有各的身份标识
+- ✅ 智能排除：自动排除日志、缓存文件，保留各自独立的 `IDENTITY.md` 和 `SOUL.md`（两端可以各有各的身份和个性）
 - ✅ 开箱即用，适配标准 WSL2 配置
 
 ### 🚀 快速开始
@@ -29,12 +29,7 @@ cd ~/.openclaw/workspace/skills
 git clone https://github.com/wzl-xenon/openclaw-wsl-win-sync
 ```
 
-2. 手动同步：
-```bash
-~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh [wsl-workspace-path] [windows-workspace-path]
-```
-
-**配置默认路径：**  
+2. **配置默认路径**：  
 打开 `scripts/bidirectional-sync.sh`，修改开头的 `DEFAULT_WSL_WS` 和 `DEFAULT_WIN_WS` 为你自己的实际路径：
 ```bash
 # --------------------------
@@ -49,10 +44,32 @@ DEFAULT_WIN_WS="/mnt/c/your-windows-path/.openclaw/workspace"
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh
 ```
 
-3. 配置自动同步，在你 WSL 和 Windows 两端的 `HEARTBEAT.md` 加入：
+你也可以每次运行传参数：
+```bash
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl-workspace /path/to/windows-workspace-from-wsl
+```
+
+**主从模式**（推荐单端主要修改场景）：指定第三个参数设置主端：
+```bash
+# Windows 为主，只同步 Windows → WSL（WSL 修改不会反向同步）
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl /path/to/windows windows
+
+# WSL 为主，只同步 WSL → Windows
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl /path/to/windows wsl
+```
+
+3. 配置自动同步，在两端的 `HEARTBEAT.md` 加入（根据你的模式调整）：
+
+**双向同步（默认）：**
 ```markdown
 ## WSL ↔ Windows OpenClaw Sync
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh
+```
+
+**Windows 为主（只同步 Windows → WSL）：**
+```markdown
+## WSL ↔ Windows OpenClaw Sync (Windows is master)
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh ~/.openclaw/workspace /mnt/c/path/to/windows-workspace windows
 ```
 
 这样每次 Heartbeat（默认30分钟）自动同步一次，保证两边始终一致。
@@ -73,10 +90,10 @@ DEFAULT_WIN_WS="/mnt/c/your-windows-path/.openclaw/workspace"
 
 这样设计：两边共享工作内容、技能、记忆，但各自保留独立的身份和个性，更灵活。
 
-### Requirements
+### 依赖要求
 
 - WSL2 开启 Windows 路径挂载（默认开启，`/mnt/c/` 可访问即可）
-- WSL 安装 `rsync`（绝大多数 WSL 发行版默认已经安装
+- WSL 安装 `rsync`（绝大多数 WSL 发行版默认已经安装）
 - 两端都已经初始化 OpenClaw 工作区
 
 ---
@@ -87,15 +104,15 @@ Bidirectional real-time sync between WSL and Windows OpenClaw workspaces on the 
 
 ### 🤔 Why this project?
 
-If you like me want better network and development experience in WSL, but also need native Windows integration (Feishu/WeChat and other desktop apps for OpenClaw on Windows, you can run OpenClaw on both sides. This tool automatically keeps your workspace, skills, and memory in sync so you can work seamlessly on both ends.
+If you like me want better network and development experience in WSL, but also need native Windows integration (Feishu/WeChat and other desktop apps for OpenClaw on Windows), you can run OpenClaw on both sides. This tool automatically keeps your workspace, skills, and memory in sync so you can work seamlessly on both ends.
 
 ### ✨ Features
 
-- ✅ Bidirectional incremental sync, changes on either side are synced to the other
+- ✅ **Multiple sync modes:** Bidirectional sync / Master-slave (one-way sync) — flexible for different workflows
 - ✅ Uses `rsync` for efficient sync, only changed files are transferred
 - ✅ Integrates with OpenClaw heartbeat, auto-sync every 30 minutes
 - ✅ Supports **cross-instance conversation**: two OpenClaw instances (WSL + Windows) can talk automatically via shared file, enabling multi-instance collaboration
-- ✅ Smart excludes: excludes logs/caches, keeps `IDENTITY.md` separate on each side (allowing different identities for different environments)
+- ✅ Smart excludes: excludes logs/caches, keeps `IDENTITY.md` and `SOUL.md` separate on each side (allowing different identities and personalities for different environments)
 - ✅ Works out of the box with standard WSL2 setup
 
 ### 🚀 Quick Start
@@ -106,12 +123,7 @@ cd ~/.openclaw/workspace/skills
 git clone https://github.com/wzl-xenon/openclaw-wsl-win-sync
 ```
 
-2. Manual sync:
-```bash
-~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh [wsl-workspace-path] [windows-workspace-path]
-```
-
-**Configure default paths:**  
+2. **Configure default paths:**  
 Open `scripts/bidirectional-sync.sh` and edit `DEFAULT_WSL_WS` and `DEFAULT_WIN_WS` at the top to match your actual paths:
 ```bash
 # --------------------------
@@ -126,10 +138,32 @@ After editing, you can just run the script without arguments:
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh
 ```
 
-3. Enable auto-sync by adding this to `HEARTBEAT.md` on **both** WSL and Windows:
+You can also pass arguments each time:
+```bash
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl-workspace /path/to/windows-workspace-from-wsl
+```
+
+**Master-slave mode** (recommended if you mostly edit on one side): specify third argument to set master:
+```bash
+# Windows is master, only sync Windows → WSL (WSL changes won't sync back)
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl /path/to/windows windows
+
+# WSL is master, only sync WSL → Windows
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl /path/to/windows wsl
+```
+
+3. Enable auto-sync by adding this to `HEARTBEAT.md` (adjust for your mode):
+
+**Bidirectional sync (default):**
 ```markdown
 ## WSL ↔ Windows OpenClaw Sync
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh
+```
+
+**Windows as master (only sync Windows → WSL):**
+```markdown
+## WSL ↔ Windows OpenClaw Sync (Windows is master)
+~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh ~/.openclaw/workspace /mnt/c/path/to/windows-workspace windows
 ```
 
 Now every heartbeat (every ~30min) will sync automatically, keeping both sides consistent.
