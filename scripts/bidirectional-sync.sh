@@ -64,27 +64,32 @@ EXCLUDE_ARGS=$(build_exclude_args)
 # Sync based on master mode
 case "$MASTER_MODE" in
   "wsl")
-    echo "🔒 Master mode: WSL is master → only WSL → Windows sync"
+    echo "🔒 Master mode: WSL is master → WSL always wins conflicts"
     echo ""
     echo "1. Sync WSL → Windows..."
-    rsync -av --update $EXCLUDE_ARGS "$WSL_WS/" "$WIN_WS/"
+    # WSL files always overwrite Windows (master always wins)
+    rsync -av --update --force $EXCLUDE_ARGS "$WSL_WS/" "$WIN_WS/"
     ;;
   "windows")
-    echo "🔒 Master mode: Windows is master → only Windows → WSL sync"
+    echo "🔒 Master mode: Windows is master → Windows always wins conflicts"
     echo ""
-    echo "1. Sync Windows → WSL..."
-    rsync -av --update $EXCLUDE_ARGS "$WIN_WS/" "$WSL_WS/"
+    echo "1. Sync WSL → Windows (WSL changes sync over, newer overwrites older)..."
+    rsync -av --update --force $EXCLUDE_ARGS "$WSL_WS/" "$WIN_WS/"
+    echo ""
+    echo "2. Sync Windows → WSL (Windows always wins any conflict)..."
+    # Windows master always overwrites WSL
+    rsync -av --update --force $EXCLUDE_ARGS "$WIN_WS/" "$WSL_WS/"
     ;;
   "bidirectional"|"")
-    echo "🔄 Bidirectional mode: two-way sync"
+    echo "🔄 Bidirectional mode: two-way sync, newer file always wins"
     echo ""
     # WSL → Windows
     echo "1. Sync WSL → Windows..."
-    rsync -av --update $EXCLUDE_ARGS "$WSL_WS/" "$WIN_WS/"
+    rsync -av --update --force $EXCLUDE_ARGS "$WSL_WS/" "$WIN_WS/"
     # Windows → WSL
     echo ""
     echo "2. Sync Windows → WSL..."
-    rsync -av --update $EXCLUDE_ARGS "$WIN_WS/" "$WSL_WS/"
+    rsync -av --update --force $EXCLUDE_ARGS "$WIN_WS/" "$WSL_WS/"
     ;;
   *)
     echo "⚠️  Unknown master mode: $MASTER_MODE"

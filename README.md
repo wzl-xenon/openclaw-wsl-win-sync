@@ -14,7 +14,9 @@
 
 ### ✨ 特性
 
-- ✅ **支持多种同步模式**：双向同步 / 指定一端为主，只同步从端 → 灵活适配你的工作流
+- ✅ **支持多种同步模式**：
+  - 双向同步（哪边新覆盖哪边）
+  - 主从模式（双向同步 + 冲突主端裁决）→ 灵活适配你的工作流
 - ✅ 基于 `rsync` 只同步变更文件，速度极快
 - ✅ 支持和 OpenClaw Heartbeat 集成，每 30 分钟自动同步
 - ✅ 支持**跨实例对话**：WSL 和 Windows 两个 OpenClaw 实例可以通过共享文件自动对话，实现双实例协作
@@ -49,14 +51,19 @@ DEFAULT_WIN_WS="/mnt/c/your-windows-path/.openclaw/workspace"
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl-workspace /path/to/windows-workspace-from-wsl
 ```
 
-**主从模式**（推荐单端主要修改场景）：指定第三个参数设置主端：
+**主从模式**（推荐单端主要修改场景）：指定第三个参数设置主端，冲突时主端总是覆盖：
 ```bash
-# Windows 为主，只同步 Windows → WSL（WSL 修改不会反向同步）
+# Windows 为主 → 双向同步，发生冲突时 Windows 总是覆盖 WSL（类似 git 中 Windows 是主分支）
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl /path/to/windows windows
 
-# WSL 为主，只同步 WSL → Windows
+# WSL 为主 → 双向同步，发生冲突时 WSL 总是覆盖 Windows
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl /path/to/windows wsl
 ```
+
+**工作逻辑：**
+- 双向同步，两端修改都能同步过去
+- 如果同一文件两边都修改了，**主端版本总是覆盖从端**，保证主端权威
+- 适合：主工作区在一端，偶尔在从端修改，最终以主端为准
 
 3. 配置自动同步，在两端的 `HEARTBEAT.md` 加入（根据你的模式调整）：
 
@@ -108,7 +115,10 @@ If you like me want better network and development experience in WSL, but also n
 
 ### ✨ Features
 
-- ✅ **Multiple sync modes:** Bidirectional sync / Master-slave (one-way sync) — flexible for different workflows
+- ✅ **Multiple sync modes:** 
+  - Bidirectional sync (newer always wins)
+  - Master-slave (bidirectional + master always resolves conflicts)
+  — flexible for different workflows
 - ✅ Uses `rsync` for efficient sync, only changed files are transferred
 - ✅ Integrates with OpenClaw heartbeat, auto-sync every 30 minutes
 - ✅ Supports **cross-instance conversation**: two OpenClaw instances (WSL + Windows) can talk automatically via shared file, enabling multi-instance collaboration
@@ -143,14 +153,19 @@ You can also pass arguments each time:
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl-workspace /path/to/windows-workspace-from-wsl
 ```
 
-**Master-slave mode** (recommended if you mostly edit on one side): specify third argument to set master:
+**Master-slave mode** (recommended if you mostly edit on one side): specify third argument to set master, master always wins conflicts:
 ```bash
-# Windows is master, only sync Windows → WSL (WSL changes won't sync back)
+# Windows is master → bidirectional sync, Windows always overwrites WSL on conflict (like Windows is the main branch in git)
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl /path/to/windows windows
 
-# WSL is master, only sync WSL → Windows
+# WSL is master → bidirectional sync, WSL always overwrites Windows on conflict
 ~/.openclaw/workspace/skills/openclaw-wsl-win-sync/scripts/bidirectional-sync.sh /path/to/wsl /path/to/windows wsl
 ```
+
+**How it works:**
+- Bidirectional sync, changes on both sides sync to the other
+- If the same file is modified on both sides, **master version always overwrites slave**, keeping master authoritative
+- Best for: you do most work on one side, occasionally work on the slave, final authority stays with master
 
 3. Enable auto-sync by adding this to `HEARTBEAT.md` (adjust for your mode):
 
